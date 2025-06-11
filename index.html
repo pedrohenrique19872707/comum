@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rede Easy Saúde - Automação de Vendas</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #2c3e50; }
+    form { margin-bottom: 20px; }
+    label { display: block; margin-top: 10px; }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button { margin-top: 10px; padding: 10px 15px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <h1>Automatização de Vendas - Rede Easy Saúde</h1>
+  <form id="leadForm">
+    <label for="nome">Nome</label>
+    <input type="text" id="nome" required>
+    <label for="email">Email</label>
+    <input type="email" id="email" required>
+    <label for="telefone">Telefone</label>
+    <input type="tel" id="telefone" required>
+    <button type="submit">Cadastrar Lead</button>
+  </form>
+  <table id="leadTable">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const tbody = document.querySelector('#leadTable tbody');
+
+    function salvarLead(lead) {
+      const leads = JSON.parse(localStorage.getItem('leads') || '[]');
+      leads.push(lead);
+      localStorage.setItem('leads', JSON.stringify(leads));
+    }
+
+    function carregarLeads() {
+      const leads = JSON.parse(localStorage.getItem('leads') || '[]');
+      tbody.innerHTML = '';
+      leads.forEach(lead => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${lead.nome}</td>
+          <td>${lead.email}</td>
+          <td>${lead.telefone}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const lead = {
+        nome: form.nome.value,
+        email: form.email.value,
+        telefone: form.telefone.value,
+      };
+      salvarLead(lead);
+      carregarLeads();
+      form.reset();
+    });
+
+    // Carrega leads ao iniciar a página
+    carregarLeads();
+  </script>
+</body>
+</html>
